@@ -1,0 +1,62 @@
+name: Deploy Blog Application
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # You can set the environment URL to the frontend’s public URL if desired.
+    environment:
+      name: production
+      url: ${{ secrets.DO_APP_FRONTEND_URL }}
+    steps:
+      # 1. Check out the repository.
+      - uses: actions/checkout@v3
+
+      # 2. Log in to Docker Hub.
+      - name: Docker Hub Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 3. Build and push the backend image.
+      - name: Build and Push Backend Image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/blog-backend:latest
+
+      # 4. Build and push the frontend image.
+      # Here we pass the backend URL (plus an API path) as a build argument.
+      - name: Build and Push Frontend Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/blog-frontend:latest
+          build-args: VITE_BACKEND_URL=${{ secrets.DO_APP_BACKEND_URL }}/api/v1
+
+      # # 5. Install and configure doctl.
+      # - name: Setup doctl
+      #   uses: digitalocean/action-doctl@v2
+      #   with:
+      #     token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      # # 6. Deploy (or update) the backend service on DigitalOcean.
+      # # This step assumes you have a backend spec file (for example, at
+      # # ./digitalocean/backend-app-spec.yaml) that defines your service, using
+      # # the "latest" image tag.
+      # - name: Deploy Backend to DigitalOcean App Platform
+      #   run: |
+      #     doctl apps update ${{ secrets.DO_APP_BACKEND_ID }} --spec ./digitalocean/backend-app-spec.yaml
+
+      # # 7. Deploy (or update) the frontend service on DigitalOcean.
+      # - name: Deploy Frontend to DigitalOcean App Platform
+      #   run: |
+      #     doctl apps update ${{ secrets.DO_APP_FRONTEND_ID }} --spec ./digitalocean/frontend-app-spec.yaml
