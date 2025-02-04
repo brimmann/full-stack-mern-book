@@ -10,7 +10,6 @@ jobs:
     # You can set the environment URL to the frontend’s public URL if desired.
     environment:
       name: production
-      url: ${{ secrets.DO_APP_FRONTEND_URL }}
     steps:
       # 1. Check out the repository.
       - uses: actions/checkout@v3
