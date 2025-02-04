@@ -1,24 +1,24 @@
 alerts:
-- rule: DEPLOYMENT_FAILED
-- rule: DOMAIN_FAILED
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
 features:
-- buildpack-stack=ubuntu-22
+  - buildpack-stack=ubuntu-22
 ingress:
   rules:
-  - component:
-      name: brimmann-blog-frontend
-    match:
-      path:
-        prefix: /
+    - component:
+        name: brimmann-blog-frontend
+      match:
+        path:
+          prefix: /
 name: blog-frontend
 region: blr
 services:
-- http_port: 8080
-  image:
-    registry: brimmann
-    registry_type: DOCKER_HUB
-    repository: blog-frontend
-    tag: latest
-  instance_count: 1
-  instance_size_slug: apps-s-1vcpu-0.5gb
-  name: brimmann-blog-frontend
+  - http_port: 80
+    image:
+      registry: brimmann
+      registry_type: DOCKER_HUB
+      repository: blog-frontend
+      tag: latest
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    name: brimmann-blog-frontend
