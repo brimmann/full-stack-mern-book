@@ -1,0 +1,28 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+features:
+- buildpack-stack=ubuntu-22
+ingress:
+  rules:
+  - component:
+      name: brimmann-blog-backend
+    match:
+      path:
+        prefix: /
+name: blog-backend
+region: blr
+services:
+- envs:
+  - key: DATABASE_URL
+    scope: RUN_AND_BUILD_TIME
+    value: mongodb+srv://rashid:bookbook@cluster0.xgv1i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+  http_port: 8080
+  image:
+    registry: brimmann
+    registry_type: DOCKER_HUB
+    repository: blog-backend
+    tag: latest
+  instance_count: 1
+  instance_size_slug: apps-s-1vcpu-0.5gb
+  name: brimmann-blog-backend

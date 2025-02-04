@@ -41,21 +41,21 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/blog-frontend:latest
           build-args: VITE_BACKEND_URL=${{ secrets.DO_APP_BACKEND_URL }}/api/v1
 
-      # # 5. Install and configure doctl.
-      # - name: Setup doctl
-      #   uses: digitalocean/action-doctl@v2
-      #   with:
-      #     token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      # 5. Install and configure doctl.
+      - name: Setup doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-      # # 6. Deploy (or update) the backend service on DigitalOcean.
-      # # This step assumes you have a backend spec file (for example, at
-      # # ./digitalocean/backend-app-spec.yaml) that defines your service, using
-      # # the "latest" image tag.
-      # - name: Deploy Backend to DigitalOcean App Platform
-      #   run: |
-      #     doctl apps update ${{ secrets.DO_APP_BACKEND_ID }} --spec ./digitalocean/backend-app-spec.yaml
+      # 6. Deploy (or update) the backend service on DigitalOcean.
+      # This step assumes you have a backend spec file (for example, at
+      # ./digitalocean/backend-app-spec.yaml) that defines your service, using
+      # the "latest" image tag.
+      - name: Deploy Backend to DigitalOcean App Platform
+        run: |
+          doctl apps update ${{ secrets.DO_APP_BACKEND_ID }} --spec ./digitalocean/blog-backend.yaml
 
-      # # 7. Deploy (or update) the frontend service on DigitalOcean.
-      # - name: Deploy Frontend to DigitalOcean App Platform
-      #   run: |
-      #     doctl apps update ${{ secrets.DO_APP_FRONTEND_ID }} --spec ./digitalocean/frontend-app-spec.yaml
+      # 7. Deploy (or update) the frontend service on DigitalOcean.
+      - name: Deploy Frontend to DigitalOcean App Platform
+        run: |
+          doctl apps update ${{ secrets.DO_APP_FRONTEND_ID }} --spec ./digitalocean/blog-frontend.yaml
